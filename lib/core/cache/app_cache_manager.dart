@@ -1,0 +1,15 @@
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+
+class AppCacheManager {
+  static const key = 'appCache';
+
+  static CacheManager instance = CacheManager(
+    Config(
+      key,
+      stalePeriod: const Duration(days: 7),
+      maxNrOfCacheObjects: 100,
+      repo: JsonCacheInfoRepository(databaseName: key),
+      fileService: HttpFileService(),
+    ),
+  );
+}

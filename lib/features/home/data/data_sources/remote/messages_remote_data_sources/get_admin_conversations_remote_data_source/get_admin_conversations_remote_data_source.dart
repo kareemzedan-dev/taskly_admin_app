@@ -1,0 +1,11 @@
+
+import 'package:either_dart/either.dart';
+import 'package:taskly_admin/core/errors/failures.dart';
+import 'package:taskly_admin/features/home/domain/entities/user_entity/user_entity.dart';
+
+abstract class GetAdminConversationsRemoteDataSource {
+
+  Future<Either<Failures, List<UserEntity>>> getConversations(String adminId);
+
+
+}
