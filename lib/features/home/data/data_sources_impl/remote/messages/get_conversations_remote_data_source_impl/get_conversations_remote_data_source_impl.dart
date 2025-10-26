@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:either_dart/either.dart';
@@ -37,9 +38,10 @@ class GetConversationsRemoteDataSourceImpl
       // Fetch messages involving the admin
       final response = await supabaseService.supabaseClient
           .from('messages')
-          .select('sender_id, receiver_id, created_at')
+          .select('sender_id, receiver_id, content, created_at')
           .or('sender_id.eq.$adminId,receiver_id.eq.$adminId')
           .order('created_at', ascending: false);
+
 
       final Map<String, dynamic> latestConversations = {};
 
@@ -54,6 +56,24 @@ class GetConversationsRemoteDataSourceImpl
           latestConversations[otherUserId] = msg;
         }
       }
+
+
+      for (final msg in response) {
+        final sender = msg['sender_id']?.toString();
+        final receiver = msg['receiver_id']?.toString();
+        if (sender == null || receiver == null) continue;
+
+        final otherUserId = sender == adminId ? receiver : sender;
+
+        // نخزن آخر رسالة (أول مرة فقط لأنها مرتبة descending)
+        if (!latestConversations.containsKey(otherUserId)) {
+          latestConversations[otherUserId] = {
+            'content': msg['content'] ?? '',
+            'created_at': msg['created_at'],
+          };
+        }
+      }
+
 
       final userIds = latestConversations.keys.toList();
       if (userIds.isEmpty) return const Right([]);
@@ -104,14 +124,13 @@ class GetConversationsRemoteDataSourceImpl
         }
       }
 
-      final List<UserModel> enrichedModels = userModels.map((u) {
+      final enrichedModels = userModels.map((u) {
         final totalEarnings = parseNumeric(u.totalEarnings);
         final completedOrders = parseNumeric(u.completedOrders);
         final totalOrders = parseNumeric(u.totalOrders);
         final rating = parseNumeric(u.rating);
 
-        print(
-            "UserModel id=${u.id} totalEarnings=${totalEarnings} completedOrders=${completedOrders} totalOrders=${totalOrders} rating=${rating}");
+        final convo = latestConversations[u.id];
 
         return UserModel(
           id: u.id,
@@ -123,11 +142,16 @@ class GetConversationsRemoteDataSourceImpl
           freelancerStatus: freelancerStatuses[u.id],
           lastSeen: u.lastSeen,
           isOnline: u.isOnline,
-
-
           rating: rating,
+
+          lastMessage: convo?['content'] ?? '',
+          lastMessageTime: convo?['created_at'] != null
+              ? DateTime.tryParse(convo?['created_at'])
+              : null,
+
         );
       }).toList();
+
 
       final enrichedEntities = enrichedModels.map((e) => e.toEntity()).toList();
       return Right(enrichedEntities);
@@ -137,4 +161,47 @@ class GetConversationsRemoteDataSourceImpl
       return Left(ServerFailure(e.toString()));
     }
   }
+
+  @override
+  Stream<List<UserEntity>> subscribeToConversations(String adminId) {
+    final controller = StreamController<List<UserEntity>>();
+
+    // أول مرة نجيب كل المحادثات الحالية
+    getConversations(adminId).then((either) {
+      either.fold(
+            (failure) => controller.addError(failure),
+            (users) => controller.add(users),
+      );
+    });
+
+    // نسمع لأي تغييرات في جدول الرسائل
+    supabaseService.supabaseClient
+        .channel('messages_changes')
+        .onPostgresChanges(
+      event: PostgresChangeEvent.insert,
+      schema: 'public',
+      table: 'messages',
+      callback: (payload) async {
+        final newMessage = payload.newRecord;
+        if (newMessage == null) return;
+
+        final senderId = newMessage['sender_id']?.toString();
+        final receiverId = newMessage['receiver_id']?.toString();
+        if (senderId == null || receiverId == null) return;
+
+        // لو الرسالة تخص الأدمن (مرسلة أو مستقبلة)
+        if (senderId == adminId || receiverId == adminId) {
+          final result = await getConversations(adminId);
+          result.fold(
+                (failure) => controller.addError(failure),
+                (users) => controller.add(users),
+          );
+        }
+      },
+    )
+        .subscribe();
+
+    return controller.stream;
+  }
+
 }

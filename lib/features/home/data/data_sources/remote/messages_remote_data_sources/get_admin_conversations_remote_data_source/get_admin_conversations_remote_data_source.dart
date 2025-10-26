@@ -6,6 +6,7 @@ import 'package:taskly_admin/features/home/domain/entities/user_entity/user_enti
 abstract class GetAdminConversationsRemoteDataSource {
 
   Future<Either<Failures, List<UserEntity>>> getConversations(String adminId);
+  Stream<List<UserEntity>> subscribeToConversations(String userId);
 
 
 }

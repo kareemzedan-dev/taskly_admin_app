@@ -16,4 +16,8 @@ class GetAdminConversionsRepoImpl implements GetAdminConversionsRepo{
   Future<Either<Failures, List<UserEntity>>> getConversations(String adminId) {
     return getConversationsRemoteDataSource.getConversations(adminId);
   }
+  @override
+  Stream<List<UserEntity>> subscribeToConversations(String userId) {
+    return getConversationsRemoteDataSource.subscribeToConversations(userId);
+  }
 }

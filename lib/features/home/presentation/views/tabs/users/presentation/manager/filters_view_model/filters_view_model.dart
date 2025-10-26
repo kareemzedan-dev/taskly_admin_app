@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
  
 class FilterViewModel extends Cubit<FilterState> {
-  FilterViewModel(String allLabel) : super(FilterState.initial(allLabel));
+  FilterViewModel(String allKey) : super(FilterState.initial(allKey));
 
   void selectStatus(String status) {
     emit(state.copyWith(selectedStatus: status));
@@ -36,12 +36,14 @@ class FilterState {
     );
   }
 
-  // 👇 default يكون All بدل null
-  factory FilterState.initial(String allLabel) {
+
+
+  factory FilterState.initial(String allKey) {
     return FilterState(
-      selectedStatus: allLabel, // default selected
+      selectedStatus: allKey,
       selectedSort: null,
     );
   }
+
 }
 

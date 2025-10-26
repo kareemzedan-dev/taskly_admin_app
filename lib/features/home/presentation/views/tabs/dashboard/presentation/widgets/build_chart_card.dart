@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../../../../core/utils/colors_manger.dart';
 
-Widget buildChartCard(String title, Widget chart, {String? info}) {
+Widget buildChartCard(String title, Widget chart, {String? info,bool? restAll = true}) {
   return Card(
     elevation: 10,
     shadowColor: Colors.transparent,
@@ -36,7 +36,14 @@ Widget buildChartCard(String title, Widget chart, {String? info}) {
                 ),
               ),
               Spacer(),
-              Icon(Icons.info_outline, size: 18.sp, color: Colors.grey[500]),
+              if (restAll != false)
+              Row(children: [
+                Text("Rest All", style: TextStyle(fontSize: 12.sp, color: ColorsManager.primary),),
+                SizedBox(width: 4.w),
+                Icon(Icons.refresh, size: 18.sp, color: ColorsManager.primary),
+
+
+              ],)
             ],
           ),
 

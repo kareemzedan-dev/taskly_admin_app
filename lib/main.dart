@@ -12,13 +12,10 @@ import 'package:taskly_admin/core/helper/my_bloc_observer.dart';
 import 'package:taskly_admin/core/cache/shared_preferences.dart';
 import 'package:taskly_admin/config/theme/app_theme.dart';
 import 'package:taskly_admin/config/routes/routes_manager.dart';
-import 'package:taskly_admin/core/services/notification_service.dart';
-import 'package:taskly_admin/core/utils/constants_manager.dart';
-import 'package:taskly_admin/core/utils/strings_manager.dart';
 import 'package:taskly_admin/l10n/app_localizations.dart';
 import 'core/cache/language_notifier.dart';
 import 'core/services/firebase_notification_service.dart';
-
+import 'core/utils/constants_manager.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -35,10 +32,6 @@ Future<void> main() async {
     anonKey: ConstantsManager.anonKey,
   );
 
-  // Local notifications + FCM setup
-  await FirebaseNotificationService.initializeLocalNotifications();
-  await FirebaseNotificationService.initializeFCM();
-
   // SharedPreferences
   await SharedPrefHelper.init();
 
@@ -48,30 +41,35 @@ Future<void> main() async {
   // Bloc Observer
   Bloc.observer = MyBlocObserver();
 
-  // FCM Token
+  // FCM setup
   FirebaseMessaging messaging = FirebaseMessaging.instance;
-  await messaging.requestPermission();
-  final fcmToken = await messaging.getToken();
-  print("FCM Token: $fcmToken");
-  NotificationService().sendNotification(receiverId: "649db31e-c0d0-4aaa-83b4-a3431192a2ac", title: "ادمن2", body: "مرحبا انا ادمن ");
 
+// طلب صلاحيات الإشعارات
+  await messaging.requestPermission(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
 
-  final supabase = Supabase.instance.client;
-  final adminId = SharedPrefHelper.getString(StringsManager.idKey); // تأكد انك مخزن الـ admin id
-  if (adminId != null && fcmToken != null) {
-    await supabase.from('admins').upsert(
-      {
-        'id': adminId,
-        'fcm_token': fcmToken,
-      },
-      onConflict: 'id',
-    );
-  }
+// تسجيل listener للإشعارات وهي في foreground
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print("📩 Foreground notification received: ${message.notification?.title}");
+    // هنا ممكن تعرض alert أو dialog
+  });
+
+// listener عند الضغط على الإشعار (app background/terminated)
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    print("📩 Notification clicked: ${message.data}");
+    // ممكن توجه المستخدم لصفحة معينة
+  });
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FirebaseNotificationService.initializeLocalNotifications();
+  await FirebaseNotificationService.initializeFCM();
+
 
 
   // Language setup
-  final savedLanguageCode =
-      SharedPrefHelper.getString('language_code') ?? 'en';
+  final savedLanguageCode = SharedPrefHelper.getString('language_code') ?? 'en';
   final languageNotifier = LanguageNotifier(Locale(savedLanguageCode));
 
   runApp(

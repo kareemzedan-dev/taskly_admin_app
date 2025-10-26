@@ -12,5 +12,7 @@ class GetConversationsUseCase {
   Future<Either<Failures, List<UserEntity>>> call(String adminId) {
     return repos.getConversations(adminId);
   }
-
+  Stream<List<UserEntity>> subscribeToConversations(String userId) {
+    return repos.subscribeToConversations(userId);
+  }
 }

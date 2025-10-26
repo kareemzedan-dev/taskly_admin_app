@@ -15,22 +15,25 @@ class FilterBottomSheetContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context)!;
-
     final sortOptions = [
-      local.highestRating,
-      local.mostEarnings,
-      local.mostCompleted,
-      local.newest,
-      local.oldest,
+      {"key": "highest_rating", "label": local.highestRating},
+      {"key": "most_earnings", "label": local.mostEarnings},
+      {"key": "most_completed", "label": local.mostCompleted},
+      {"key": "newest", "label": local.newest},
+      {"key": "oldest", "label": local.oldest},
     ];
+
 
     final statuses = [
-      {"label": local.all, "color": Colors.grey},
-      {"label": local.active, "color": Colors.green},
-      {"label": local.suspended, "color": Colors.orange},
-      {"label": local.pending, "color": Colors.blue},
-      {"label": local.inactive, "color": Colors.red},
+      {"key": "all", "label": local.all, "color": Colors.grey},
+      {"key": "active", "label": local.active, "color": Colors.green},
+      {"key": "suspended", "label": local.suspended, "color": Colors.orange},
+      {"key": "pending", "label": local.pending, "color": Colors.blue},
+      {"key": "deactivate", "label": local.inactive, "color": Colors.red},
+      {"key": "verified", "label": local.verifiedFreelancer, "color": Colors.green},
+      {"key": "unverified", "label": local.unverified_freelancer, "color": Colors.red},
     ];
+
 
     return BlocBuilder<FilterViewModel, FilterState>(
       builder: (context, state) {
@@ -56,9 +59,10 @@ class FilterBottomSheetContent extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      context.read<FilterViewModel>().clearFilters(local.all);
+                      context.read<FilterViewModel>().clearFilters("all");
                       context.read<GetAllUsersViewModel>().clearFilters();
                     },
+
                     child: Text(
                       local.clearAll,
                       style: TextStyle(
@@ -95,12 +99,15 @@ class FilterBottomSheetContent extends StatelessWidget {
                   final filterVM = context.read<FilterViewModel>();
                   final userVM = context.read<GetAllUsersViewModel>();
 
-                  // ---- Mapping Strings -> Enums ----
+                  print('Selected status: ${filterVM.state.selectedStatus}');
+                  print('Selected sort: ${filterVM.state.selectedSort}');
+
                   if (filterVM.state.selectedStatus != null) {
-                    final status =
-                        mapStringToStatus(filterVM.state.selectedStatus!);
+                    final status = mapStringToStatus(filterVM.state.selectedStatus!);
+                    print('Mapped status: $status'); // 👈 شوف الناتج هنا
                     userVM.updateStatus(status);
                   }
+
                   if (filterVM.state.selectedSort != null) {
                     final sort = mapStringToSort(filterVM.state.selectedSort!);
                     userVM.updateSort(sort);
@@ -108,6 +115,7 @@ class FilterBottomSheetContent extends StatelessWidget {
 
                   Navigator.pop(context);
                 },
+
               ),
             ],
           ),
@@ -116,10 +124,8 @@ class FilterBottomSheetContent extends StatelessWidget {
     );
   }
 }
-
-// ------------------ Chips Widgets ------------------
 class SortByChips extends StatelessWidget {
-  final List<String> sortOptions;
+  final List<Map<String, String>> sortOptions;
   final String? selectedSort;
   final Function(String) onSelected;
 
@@ -135,12 +141,12 @@ class SortByChips extends StatelessWidget {
     return Wrap(
       spacing: 8.w,
       children: sortOptions.map((option) {
-        final isSelected = selectedSort == option;
+        final isSelected = selectedSort == option["key"];
         return ChoiceChip(
-          label: Text(option),
+          label: Text(option["label"]!),
           selected: isSelected,
           onSelected: (val) {
-            if (val) onSelected(option);
+            if (val) onSelected(option["key"]!);
           },
           selectedColor: ColorsManager.primary.withOpacity(0.2),
           labelStyle: TextStyle(
@@ -177,14 +183,14 @@ class StatusFilterChips extends StatelessWidget {
     return Wrap(
       spacing: 8.w,
       children: statuses.map((status) {
-        final isSelected = selectedStatus == status["label"];
+        final isSelected = selectedStatus == status["key"];
         final Color color = status["color"] as Color;
 
         return FilterChip(
           label: Text(status["label"]),
           selected: isSelected,
           onSelected: (val) {
-            if (val) onSelected(status["label"]);
+            if (val) onSelected(status["key"]); // ← استخدم key مش label
           },
           selectedColor: color.withOpacity(0.2),
           checkmarkColor: color,

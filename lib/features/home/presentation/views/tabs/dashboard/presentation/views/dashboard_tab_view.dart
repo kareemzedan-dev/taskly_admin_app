@@ -20,21 +20,33 @@ class DashboardTabView extends StatelessWidget {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  Future<void> _onRefresh(BuildContext context) async {
+    // نعيد تحميل كل البيانات
+    context.read<GetAllOrdersViewModel>().getAllOrders();
+    context.read<GetAllUsersViewModel>().getAllUsers();
+    context.read<PendingVerificationsViewModel>().getPendingVerifications();
+    context.read<PendingPaymentsViewModel>().getPendingPayments();
+    context.read<LateOrdersViewModel>().getLateOrders();
+
+    // نديه delay بسيط علشان الـ indicator يبين شويه
+    await Future.delayed(const Duration(seconds: 1));
+  }
+
   @override
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context)!;
 
     return Scaffold(
-  key: _scaffoldKey,
-  appBar: CustomAppBar(
-    title: local.manageDashboard,
-    image: Assets.assetsImagesDashboard,
-    menuIconShow: true,
-    onMenuPressed: () {
-      _scaffoldKey.currentState?.openDrawer();
-    },
-  ),
-  drawer: const AdminSettingsDrawer(),
+      key: _scaffoldKey,
+      appBar: CustomAppBar(
+        title: local.manageDashboard,
+        image: Assets.assetsImagesDashboard,
+        menuIconShow: true,
+        onMenuPressed: () {
+          _scaffoldKey.currentState?.openDrawer();
+        },
+      ),
+      drawer: const AdminSettingsDrawer(),
       backgroundColor: ColorsManager.white,
       body: MultiBlocProvider(
         providers: [
@@ -45,22 +57,23 @@ class DashboardTabView extends StatelessWidget {
             create: (_) => getIt<GetAllUsersViewModel>()..getAllUsers(),
           ),
           BlocProvider(
-            create:
-                (_) =>
-            getIt<PendingVerificationsViewModel>()
+            create: (_) => getIt<PendingVerificationsViewModel>()
               ..getPendingVerifications(),
           ),
           BlocProvider(
-            create:
-                (_) =>
+            create: (_) =>
             getIt<PendingPaymentsViewModel>()..getPendingPayments(),
           ),
           BlocProvider(
             create: (_) => getIt<LateOrdersViewModel>()..getLateOrders(),
           ),
-
         ],
-        child: DashboardTabViewBody(),
+        child: Builder(
+          builder: (context) => RefreshIndicator(
+            onRefresh: () => _onRefresh(context),
+            child: const DashboardTabViewBody(),
+          ),
+        ),
       ),
     );
   }

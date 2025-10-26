@@ -6,8 +6,9 @@ class LoginResponseEntity {
 }
 
 class LoginUserEntity {
+  String? id;
   String? email;
   String? password;
   String? role;
-  LoginUserEntity({this.email, this.password,this.role});
+  LoginUserEntity({this.email, this.password,this.role , this.id});
 }

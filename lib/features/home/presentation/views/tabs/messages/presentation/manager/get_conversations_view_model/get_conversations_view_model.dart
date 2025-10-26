@@ -8,23 +8,42 @@ import 'package:taskly_admin/features/home/presentation/views/tabs/messages/pres
 
 @injectable
 class GetConversationsViewModel extends Cubit<GetConversationsStates> {
+  final GetConversationsUseCase getConversationsUseCase;
+
   GetConversationsViewModel(this.getConversationsUseCase)
-    : super(GetConversationsInitialStates());
-  GetConversationsUseCase getConversationsUseCase;
-  Future<Either<Failures, List<UserEntity>>> getConversations(
-      String adminId,
-      ) async {
+      : super(GetConversationsInitialStates());
+
+  Stream<List<UserEntity>>? _subscription;
+
+  Future<Either<Failures, List<UserEntity>>> getConversations(String adminId) async {
     try {
       emit(GetConversationsLoadingStates());
-      var result = await getConversationsUseCase.call(adminId);
 
+      // أول مرة نجيب الداتا
+      final result = await getConversationsUseCase.call(adminId);
       result.fold(
             (failure) {
-              print("Error fetching conversations: ${failure.message}");
+          print("Error fetching conversations: ${failure.message}");
           if (!isClosed) emit(GetConversationsErrorStates(errorMessage: failure.message));
         },
             (conversations) {
           if (!isClosed) emit(GetConversationsSuccessStates(conversationsList: conversations));
+        },
+      );
+
+      // نبدأ نسمع للتحديثات الجديدة
+      _subscription = getConversationsUseCase.subscribeToConversations(adminId);
+
+      _subscription!.listen(
+            (conversations) {
+          if (!isClosed) {
+            emit(GetConversationsSuccessStates(conversationsList: conversations));
+          }
+        },
+        onError: (error) {
+          if (!isClosed) {
+            emit(GetConversationsErrorStates(errorMessage: error.toString()));
+          }
         },
       );
 
@@ -35,4 +54,10 @@ class GetConversationsViewModel extends Cubit<GetConversationsStates> {
     }
   }
 
+  @override
+  Future<void> close() {
+    // نلغي الـ Stream لما البلوك يتقفل عشان مايحصلش memory leak
+    _subscription = null;
+    return super.close();
+  }
 }

@@ -5,16 +5,24 @@ import 'package:taskly_admin/features/home/domain/entities/user_entity/user_enti
 import 'package:taskly_admin/features/home/presentation/views/tabs/users/presentation/manager/get_order_by_id_view_model/get_order_by_id_states.dart';
 import 'package:taskly_admin/features/home/presentation/views/tabs/users/presentation/views/widgets/user_status_card.dart';
 import 'package:taskly_admin/l10n/app_localizations.dart';
-
 class StatsCards extends StatelessWidget {
-  final GetOrderByIdSuccessState state;
+  final int totalOrders;
+  final int completedOrders;
+  final double totalEarnings;
   final UserEntity user;
 
-  const StatsCards({super.key, required this.state, required this.user});
+  const StatsCards({
+    super.key,
+    required this.totalOrders,
+    required this.completedOrders,
+    required this.totalEarnings,
+    required this.user,
+  });
 
   @override
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context)!;
+
     return Column(
       children: [
         Row(
@@ -22,14 +30,14 @@ class StatsCards extends StatelessWidget {
           children: [
             UserStatusCard(
               title: local.totalOrders,
-              value: user.totalOrders.toString(),
+              value: totalOrders.toString(),
               icon: Icons.shopping_cart,
               color: Colors.blue,
             ),
             SizedBox(width: 16.w),
             UserStatusCard(
               title: local.completed,
-              value: user.completedOrders.toString(),
+              value: completedOrders.toString(),
               icon: Icons.check_circle,
               color: Colors.green,
             ),
@@ -41,7 +49,7 @@ class StatsCards extends StatelessWidget {
           children: [
             UserStatusCard(
               title: local.earnings,
-              value: "\$${user.totalEarnings} ${local.sar}",
+              value: "${totalEarnings.toStringAsFixed(2)} ${local.sar}",
               icon: Icons.attach_money,
               color: Colors.orange,
             ),

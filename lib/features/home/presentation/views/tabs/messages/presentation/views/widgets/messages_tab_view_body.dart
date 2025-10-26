@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:taskly_admin/core/cache/shared_preferences.dart';
 import 'package:taskly_admin/core/components/custom_search_text_field.dart';
 import 'package:taskly_admin/core/utils/assets_manager.dart';
@@ -154,8 +155,11 @@ class _MessagesTabViewBodyState extends State<MessagesTabViewBody> {
                                     );
                                   },
                                   name: user.fullName ?? "Unknown",
-                                  message: "test",
-                                  time: "2:30 PM",
+                                  message: (user.lastMessage == null || user.lastMessage!.trim().isEmpty)
+                                      ? "مرفق"
+                                      : user.lastMessage!,
+
+                                  time: DateFormat("HH:mm a").format(user.lastMessageTime ?? DateTime.now()) ??"",
                                   status: user.clientStatus ?? "Active",
                                   statusColor: Colors.green,
                                   imagePath: user.profileImage,
@@ -219,8 +223,11 @@ class _MessagesTabViewBodyState extends State<MessagesTabViewBody> {
                                     );
                                   },
                                   name: user.fullName ?? "Unknown",
-                                  message: "Last message here",
-                                  time: "12:30",
+                                  message: (user.lastMessage == null || user.lastMessage!.trim().isEmpty)
+                                      ? "مرفق"
+                                      : user.lastMessage!,
+
+                                  time: DateFormat("HH:mm a").format(user.lastMessageTime ?? DateTime.now()) ??"",
                                   status: user.freelancerStatus ?? "Active",
                                   statusColor: Colors.green,
                                   imagePath: user.profileImage,

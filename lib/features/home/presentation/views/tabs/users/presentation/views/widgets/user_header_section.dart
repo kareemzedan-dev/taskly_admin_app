@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:taskly_admin/core/helper/get_status_color.dart';
 import '../../../../../../../../../core/utils/colors_manger.dart';
+import '../../../../../../../../../core/utils/users_status_local_extension.dart';
 import '../../../../../../../domain/entities/user_entity/user_entity.dart';
 import '../../../../messages/presentation/views/widgets/user_avatar.dart';
 
@@ -102,7 +103,9 @@ class UserHeaderSection extends StatelessWidget {
               borderRadius: BorderRadius.circular(8.r),
             ),
             child: AutoSizeText(
-              isFreelancer ? (user.freelancerStatus ?? '') : (user.clientStatus ?? ''),
+              isFreelancer
+                  ? (user.freelancerStatus?.toLocalizedStatus(context) ?? '')
+                  : (user.clientStatus?.toLocalizedStatus(context) ?? ''),
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
@@ -112,6 +115,7 @@ class UserHeaderSection extends StatelessWidget {
               minFontSize: 10,
               overflow: TextOverflow.ellipsis,
             ),
+
           ),
         ],
       ),

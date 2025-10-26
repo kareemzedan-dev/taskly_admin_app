@@ -126,6 +126,7 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
 
       final registerResponse = RegisterResponseDm(
         user: UserDm(
+          id: user.id,
           firstName: firstName,
           lastName: lastName,
           email: user.email,
@@ -148,6 +149,7 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
 
   @override
   Future<Either<Failures, LoginResponseEntity>> login(
+
       String email,
       String password,
       String role,
@@ -198,7 +200,7 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
       );
 
       final loginResponse = LoginResponseDm(
-        user: LoginUserDm(email: user.email, password: password),
+        user: LoginUserDm(email: user.email, password: password ,id: user.id),
         message: StringsManager.userLoginSuccessfully,
         token: session.accessToken,
       );

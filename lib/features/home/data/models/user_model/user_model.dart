@@ -27,6 +27,8 @@ class UserModel extends UserEntity {
       super.totalOrders,
       super.totalEarnings,
       super.completedOrders,
+      super.lastMessage,
+      super.lastMessageTime,
   });
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
@@ -83,6 +85,8 @@ class UserModel extends UserEntity {
       'freelancer_status': freelancerStatus,
       'freelancer_balance': freelancerBalance,
       'is_verified': isVerified,
+      'last_message': lastMessage,
+      'last_message_time': lastMessageTime?.toIso8601String(),
     };
   }
 
@@ -109,6 +113,8 @@ class UserModel extends UserEntity {
     String? freelancerStatus,
     double? freelancerBalance,
     bool? isVerified,
+    String? lastMessage,
+    DateTime? lastMessageTime,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -136,6 +142,8 @@ class UserModel extends UserEntity {
       totalOrders: totalOrders ?? this.totalOrders,
       totalEarnings: totalEarnings ?? this.totalEarnings,
       completedOrders: completedOrders ?? this.completedOrders,
+      lastMessage: lastMessage ?? this.lastMessage,
+      lastMessageTime: lastMessageTime ?? this.lastMessageTime,
     );
   }
 
@@ -166,6 +174,8 @@ class UserModel extends UserEntity {
       totalOrders: totalOrders,
       totalEarnings: totalEarnings,
       completedOrders: completedOrders,
+      lastMessage: lastMessage,
+      lastMessageTime: lastMessageTime,
     );
   }
 
@@ -196,6 +206,8 @@ class UserModel extends UserEntity {
       totalOrders: entity.totalOrders,
       totalEarnings: entity.totalEarnings,
       completedOrders: entity.completedOrders,
+      lastMessage: entity.lastMessage,
+      lastMessageTime: entity.lastMessageTime,
     );
   }
 

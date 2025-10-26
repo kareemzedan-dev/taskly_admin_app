@@ -4,7 +4,7 @@ import 'package:taskly_admin/core/utils/colors_manger.dart';
 
 class UserInfo extends StatelessWidget {
   final String name;
-  final String rating;
+  final String message;
   final bool isFreelancer;
   final String? status;
   final String? freelancerStatus;
@@ -12,7 +12,7 @@ class UserInfo extends StatelessWidget {
   const UserInfo({
     super.key,
     required this.name,
-    required this.rating,
+    required this.message,
     required this.isFreelancer,
     this.status,
     this.freelancerStatus,
@@ -26,47 +26,45 @@ class UserInfo extends StatelessWidget {
         children: [
           isFreelancer
               ? Row(
-                children: [
-                  Text(
-                    name,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  SizedBox(width: 4.w),
-                  if (isFreelancer) SizedBox(width: 4.w),
-                  if (isFreelancer)
-                    if (status != null)
-                      Icon(
-                        freelancerStatus!.trim().toLowerCase() == "verified"
-                            ? Icons.verified
-                            : Icons.error_outline,
-                        color:
-                            freelancerStatus!.trim().toLowerCase() == "verified"
-                                ? ColorsManager.primary
-                                : Colors.red,
+                  children: [
+                    Text(
+                      name,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w800,
                       ),
-                ],
-              )
+                    ),
+                    SizedBox(width: 4.w),
+                    if (isFreelancer) SizedBox(width: 4.w),
+                    if (isFreelancer)
+                      if (status != null)
+                        Icon(
+                          freelancerStatus!.trim().toLowerCase() == "verified"
+                              ? Icons.verified
+                              : Icons.error_outline,
+                          color:
+                              freelancerStatus!.trim().toLowerCase() ==
+                                  "verified"
+                              ? ColorsManager.primary
+                              : Colors.red,
+                        ),
+                  ],
+                )
               : Text(
-                name,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w800),
-              ),
+                  name,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w800),
+                ),
 
           SizedBox(height: 4.h),
           Row(
+           crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(
-                Icons.star,
-                color: Colors.grey.shade400,
-                size: 16.sp,
-              ),
+              Icon(Icons.message, color: Colors.grey.shade400, size: 16.sp),
               SizedBox(width: 4.w),
               Flexible(
                 child: Text(
-                  rating,
+                  message,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(
                     context,

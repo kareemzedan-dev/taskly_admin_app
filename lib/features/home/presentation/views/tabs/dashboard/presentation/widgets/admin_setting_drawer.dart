@@ -39,17 +39,17 @@ class AdminSettingsDrawer extends StatelessWidget {
               ),
             ),
           ),
-          ListTile(
-            leading: Icon(Icons.color_lens),
-            title: Text(local.theme),
-            onTap: () {
-              Navigator.pop(context);
-              showBottomSheet(
-                context: context,
-                builder: (context) => ThemeBottomSheetContent(),
-              );
-            },
-          ),
+          // ListTile(
+          //   leading: Icon(Icons.color_lens),
+          //   title: Text(local.theme),
+          //   onTap: () {
+          //     Navigator.pop(context);
+          //     showBottomSheet(
+          //       context: context,
+          //       builder: (context) => ThemeBottomSheetContent(),
+          //     );
+          //   },
+          // ),
           ListTile(
             leading: Icon(Icons.language),
             title: Text(local.language),

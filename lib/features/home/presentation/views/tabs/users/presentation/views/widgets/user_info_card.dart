@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:taskly_admin/core/helper/get_status_color.dart';
 import 'package:taskly_admin/core/utils/assets_manager.dart';
 import 'package:taskly_admin/core/utils/colors_manger.dart';
+import 'package:taskly_admin/core/utils/users_status_local_extension.dart';
 import 'package:taskly_admin/features/home/domain/entities/user_entity/user_entity.dart';
 import 'package:taskly_admin/features/home/presentation/views/tabs/users/presentation/views/widgets/user_profile_info.dart';
 import 'package:taskly_admin/l10n/app_localizations.dart';
@@ -75,8 +76,8 @@ class UserInfoCard extends StatelessWidget {
                   ),
                   child: Text(
                     isFreelancer
-                        ? (userEntity.freelancerStatus ?? local.unassigned)
-                        : (userEntity.clientStatus ?? local.unassigned),
+                        ? (userEntity.freelancerStatus?.toLocalizedStatus(context) ?? local.unassigned)
+                        : (userEntity.clientStatus?.toLocalizedStatus(context) ?? local.unassigned),
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
@@ -116,3 +117,4 @@ class UserInfoCard extends StatelessWidget {
     );
   }
 }
+

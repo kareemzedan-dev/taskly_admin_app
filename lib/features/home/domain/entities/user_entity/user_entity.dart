@@ -24,6 +24,8 @@ class UserEntity {
   final double? totalOrders;
   final double? totalEarnings;
   final double? completedOrders;
+  final String? lastMessage;
+  final DateTime? lastMessageTime;
 
   UserEntity({
     required this.id,
@@ -51,6 +53,8 @@ class UserEntity {
     required this.totalOrders,
     required this.totalEarnings,
     required this.completedOrders,
+    this.lastMessage,
+    this.lastMessageTime,
   });
   static UserEntity get dummy => UserEntity(
     id: '0',
@@ -77,6 +81,8 @@ class UserEntity {
     totalOrders: 0,
     totalEarnings: 0.0,
     completedOrders: 0.0,
+    lastMessage: '',
+    lastMessageTime:   DateTime.now(),
   );
 }
 

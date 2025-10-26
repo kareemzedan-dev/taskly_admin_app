@@ -4,15 +4,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:taskly_admin/core/di/di.dart';
 import 'package:taskly_admin/features/home/presentation/views/tabs/dashboard/presentation/manager/get_all_orders_view_model/get_all_orders_states.dart';
 import 'package:taskly_admin/features/home/presentation/views/tabs/dashboard/presentation/manager/get_all_orders_view_model/get_all_orders_view_model.dart';
+import 'package:taskly_admin/features/home/presentation/views/tabs/dashboard/presentation/manager/revenue_statistics_view_model/revenue_statistics_view_model.dart';
+import 'package:taskly_admin/features/home/presentation/views/tabs/dashboard/presentation/manager/revenue_statistics_view_model/revenue_statistics_states.dart';
 import 'package:taskly_admin/features/home/presentation/views/tabs/dashboard/presentation/widgets/revenue_trend_chart.dart';
-import 'package:taskly_admin/features/home/presentation/views/tabs/payments/presentation/manager/admin_payments_view_model/admin_payments_view_model.dart';
-import 'package:taskly_admin/features/home/presentation/views/tabs/payments/presentation/manager/admin_payments_view_model/admin_payments_view_model_states.dart';
 import 'package:taskly_admin/features/home/presentation/views/tabs/dashboard/presentation/manager/category_distribution_view_model/category_distribution_view_model.dart';
 import 'package:taskly_admin/features/home/presentation/views/tabs/dashboard/presentation/manager/category_distribution_view_model/category_distribution_states.dart';
 import 'package:taskly_admin/features/home/presentation/views/tabs/dashboard/presentation/widgets/category_distribution_chart.dart';
 import 'package:taskly_admin/features/home/presentation/views/tabs/dashboard/presentation/widgets/order_volume_chart.dart';
 import 'package:taskly_admin/features/home/presentation/views/tabs/dashboard/presentation/widgets/build_chart_card.dart';
 import 'package:taskly_admin/l10n/app_localizations.dart';
+
 class TrendsSection extends StatefulWidget {
   const TrendsSection({super.key});
 
@@ -21,21 +22,22 @@ class TrendsSection extends StatefulWidget {
 }
 
 class _TrendsSectionState extends State<TrendsSection> {
-  late final AdminPaymentsViewModel paymentsVM;
+  late final RevenueStatisticsViewModel revenueVM;
   late final GetAllOrdersViewModel ordersVM;
   late final CategoryDistributionViewModel categoryVM;
 
   @override
   void initState() {
     super.initState();
-    paymentsVM = getIt<AdminPaymentsViewModel>()..getAllPayments();
+    revenueVM = getIt<RevenueStatisticsViewModel>()..getRevenueStatistics('weekly');
     ordersVM = getIt<GetAllOrdersViewModel>()..getAllOrders();
     categoryVM = getIt<CategoryDistributionViewModel>()..getCategoryDistribution();
+
   }
 
   @override
   void dispose() {
-    paymentsVM.close();
+    revenueVM.close();
     ordersVM.close();
     categoryVM.close();
     super.dispose();
@@ -47,48 +49,56 @@ class _TrendsSectionState extends State<TrendsSection> {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider.value(value: paymentsVM),
+        BlocProvider.value(value: revenueVM),
         BlocProvider.value(value: ordersVM),
         BlocProvider.value(value: categoryVM),
       ],
       child: Column(
         children: [
+          /// 🔹 Revenue Trend (using new RevenueStatisticsViewModel)
           buildChartCard(
             local.revenueTrend,
-            BlocBuilder<AdminPaymentsViewModel, AdminPaymentsViewModelStates>(
+            BlocBuilder<RevenueStatisticsViewModel, RevenueStatisticsStates>(
               builder: (context, state) {
-                if (state is AdminPaymentsViewModelLoadingState) {
+                if (state is RevenueStatisticsStatesLoading) {
                   return const Center(child: CupertinoActivityIndicator());
-                } else if (state is AdminPaymentsViewModelErrorState) {
+                } else if (state is RevenueStatisticsStatesError) {
                   return Center(child: Text("Error: ${state.message}"));
-                } else if (state is AdminPaymentsViewModelSuccessState) {
-                  return RevenueTrendChart(payments: state.payments);
+                } else if (state is RevenueStatisticsStatesSuccess) {
+                  return RevenueTrendChart(revenueStatistics: state.revenueStatistics);
                 }
                 return const SizedBox.shrink();
               },
             ),
             info: local.totalRevenueInfo,
           ),
+
           SizedBox(height: 16.h),
+
+          /// 🔹 Order Volume Chart
           buildChartCard(
             local.orderVolume,
-            BlocBuilder<GetAllOrdersViewModel, GetAllOrdersStates>(
+            BlocBuilder<RevenueStatisticsViewModel, RevenueStatisticsStates>(
               builder: (context, state) {
-                if (state is GetAllOrdersLoadingState) {
+                if (state is RevenueStatisticsStatesLoading) {
                   return const Center(child: CupertinoActivityIndicator());
-                } else if (state is GetAllOrdersErrorState) {
+                } else if (state is RevenueStatisticsStatesError) {
                   return Center(child: Text("Error: ${state.message}"));
-                } else if (state is GetAllOrdersSuccessState) {
-                  return OrderVolumeChart(orders: state.orders);
+                } else if (state is RevenueStatisticsStatesSuccess) {
+                  return OrderVolumeChart(orders: state.revenueStatistics);
                 }
                 return const SizedBox.shrink();
               },
             ),
             info: local.dailyOrderInfo,
           ),
+
           SizedBox(height: 16.h),
+
+          /// 🔹 Category Distribution Chart
           buildChartCard(
             local.categoryDistribution,
+            restAll: false,
             BlocBuilder<CategoryDistributionViewModel, CategoryDistributionStates>(
               builder: (context, state) {
                 if (state is CategoryDistributionLoadingState) {

@@ -28,7 +28,6 @@ class GetAllUsersRemoteDataSourceImpl extends GetAllUsersRemoteDataSource {
       final List<UserEntity> result = [];
 
       for (final user in users) {
-
         final role = user['role']?.toString() ?? '';
 
         Map<String, dynamic>? clientData;
@@ -58,56 +57,53 @@ class GetAllUsersRemoteDataSourceImpl extends GetAllUsersRemoteDataSource {
           billingInfo = _parseBillingInfo(clientData['billing_info']);
         }
 
-        result.add(UserModel(
-          id: user['id']?.toString() ?? '',
-          fullName: user['full_name']?.toString() ?? '',
-          email: user['email']?.toString() ?? '',
-          phoneNumber: user['phone_number']?.toString() ?? '',
-          role: role,
-          profileImage: user['profile_image']?.toString() ?? '',
-          bio: user['bio']?.toString() ?? '',
+        result.add(
+          UserModel(
+            id: user['id']?.toString() ?? '',
+            fullName: user['full_name']?.toString() ?? '',
+            email: user['email']?.toString() ?? '',
+            phoneNumber: user['phone_number']?.toString() ?? '',
+            role: role,
+            profileImage: user['profile_image']?.toString() ?? '',
+            bio: user['bio']?.toString() ?? '',
 
-          createdAt: user['created_at'] != null
-              ? DateTime.tryParse(user['created_at'].toString())
-              : null,
-             billingInfo: billingInfo,
+            createdAt: user['created_at'] != null
+                ? DateTime.tryParse(user['created_at'].toString())
+                : null,
+            billingInfo: billingInfo,
 
+            updatedAt: user['updated_at'] != null
+                ? DateTime.tryParse(user['updated_at'].toString())
+                : null,
 
-
-          updatedAt: user['updated_at'] != null
-              ? DateTime.tryParse(user['updated_at'].toString())
-              : null,
-
-
-
-    isOnline: user['is_online'] ?? false,
+            isOnline: user['is_online'] ?? false,
             rating: _parseDouble(user['rating']) ?? 0.0,
             balance: _parseDouble(clientData?['balance']) ?? 0.0,
             hourlyRate: _parseDouble(freelancerData?['hourly_rate']),
-            freelancerBalance: _parseDouble(freelancerData?['freelancer_balance']) ?? 0.0,
-             completedOrders: _parseDouble(user['completed_orders'])?.toDouble() ?? 0,
+            freelancerBalance:
+                _parseDouble(freelancerData?['freelancer_balance']) ?? 0.0,
+            completedOrders:
+                _parseDouble(user['completed_orders'])?.toDouble() ?? 0,
             totalOrders: _parseDouble(user['total_orders'])?.toDouble() ?? 0,
 
-          jobsCount: user['jobs_count']?.toInt() ?? 0,
-          lastSeen: user['last_seen'] != null
-              ? DateTime.tryParse(user['last_seen'].toString())
-              : null,
-          reviewsCount: user['reviews_count']?.toInt() ?? 0,
-clientStatus: clientData?['client_status']?.toString() ?? '',
-freelancerStatus: freelancerData?['freelancer_status']?.toString() ?? '',
-isVerified: freelancerData?['is_verified'] ?? false,
-            totalEarnings:  _parseDouble(user['total_earnings'])?.toDouble() ?? 0,
-
-
-
-        ));
+            jobsCount: user['jobs_count']?.toInt() ?? 0,
+            lastSeen: user['last_seen'] != null
+                ? DateTime.tryParse(user['last_seen'].toString())
+                : null,
+            reviewsCount: user['reviews_count']?.toInt() ?? 0,
+            clientStatus: clientData?['client_status']?.toString() ?? '',
+            freelancerStatus:
+                freelancerData?['freelancer_status']?.toString() ?? '',
+            isVerified: freelancerData?['is_verified'] ?? false,
+            totalEarnings:
+                _parseDouble(user['total_earnings'])?.toDouble() ?? 0,
+          ),
+        );
       }
 
       print("Fetched ${result.length} users");
       return Right(result);
-
     } catch (e, stackTrace) {
-
       print("Error fetching users: $e\n$stackTrace");
       return Left(ServerFailure('Failed to fetch users: $e'));
     }
@@ -118,7 +114,9 @@ isVerified: freelancerData?['is_verified'] ?? false,
       if (billingInfoData is Map<String, dynamic>) {
         return BillingInfo.fromJson(billingInfoData);
       } else if (billingInfoData is String) {
-        final Map<String, dynamic> jsonMap = Map<String, dynamic>.from(json.decode(billingInfoData));
+        final Map<String, dynamic> jsonMap = Map<String, dynamic>.from(
+          json.decode(billingInfoData),
+        );
         return BillingInfo.fromJson(jsonMap);
       }
       return null;
@@ -136,21 +134,4 @@ isVerified: freelancerData?['is_verified'] ?? false,
     return null;
   }
 
-  List<String>? _parseSkills(dynamic skillsData) {
-    if (skillsData == null) return null;
-
-    if (skillsData is List<String>) {
-      return skillsData;
-    } else if (skillsData is List<dynamic>) {
-      return skillsData.map((e) => e.toString()).toList();
-    } else if (skillsData is String) {
-      try {
-        final List<dynamic> jsonList = json.decode(skillsData);
-        return jsonList.map((e) => e.toString()).toList();
-      } catch (e) {
-        return [skillsData];
-      }
-    }
-    return null;
-  }
 }

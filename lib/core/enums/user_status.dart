@@ -4,4 +4,6 @@ enum UserStatus {
   suspended,
   pending,
   inactive,
+  verified,
+  unverified,
 }

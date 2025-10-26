@@ -19,37 +19,22 @@ class ActivityStatistics extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-        local.activityStatistics,
+          local.activityStatistics,
           style: Theme.of(context)
               .textTheme
               .titleMedium
               ?.copyWith(fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 16.h),
-        BlocBuilder<GetOrdersByIdViewModel, GetOrderByIdStates>(
-          builder: (context, state) {
-            if (state is GetOrderByIdLoadingState) {
-              return Center(child: CircularProgressIndicator());
-            } else if (state is GetOrderByIdErrorState) {
-              return Center(
-                child: Text(
-                  state.message.contains("not found") ||
-                          state.message.contains("No orders")
-                      ? local.noOrdersYet
-                      :local.somethingWentWrong,
-                ),
-              );
-            } else if (state is GetOrderByIdSuccessState) {
-              if (state.totalOrders == 0) {
-                return Center(child: Text(local.noOrdersYet));
-              }
-              return StatsCards(state: state, user: user);
-            }
-            return SizedBox.shrink();
-          },
+
+        StatsCards(
+          totalOrders: (user.totalOrders ?? 0).toInt(),
+          completedOrders: (user.completedOrders ?? 0).toInt(),
+          totalEarnings: user.totalEarnings ?? 0 ,
+          user: user,
         ),
+
       ],
     );
   }
 }
- 

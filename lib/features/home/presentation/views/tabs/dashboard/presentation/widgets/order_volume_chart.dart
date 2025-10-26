@@ -1,28 +1,28 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:taskly_admin/features/home/domain/entities/order_entity/order_entity.dart';
+import '../../../../../../domain/entities/revenue_statistics_entity/revenue_statistics_entity.dart';
 
 class OrderVolumeChart extends StatelessWidget {
-  final List<OrderEntity> orders;
+  final List<RevenueStatisticsEntity> orders;
 
   const OrderVolumeChart({super.key, required this.orders});
 
   @override
   Widget build(BuildContext context) {
+    print("📦 Orders Data: ${orders.map((e) => '${e.periodDate} | ${e.totalOrders}').toList()}");
 
+    // بنحسب عدد الطلبات في كل يوم من الأسبوع
     final Map<int, int> weeklyOrders = {};
     for (var order in orders) {
-      if (order.status.name.toLowerCase() == "completed") {
-        final weekday = order.createdAt.weekday; // 1=Mon .. 7=Sun
-        weeklyOrders[weekday] = (weeklyOrders[weekday] ?? 0) + 1;
-      }
+      final weekday = order.periodDate.weekday; // 1=Mon .. 7=Sun
+      weeklyOrders[weekday] = (weeklyOrders[weekday] ?? 0) + order.totalOrders;
     }
 
-
+    // بنبني الأعمدة
     final barGroups = List.generate(
       7,
-      (i) => BarChartGroupData(
+          (i) => BarChartGroupData(
         x: i,
         barRods: [
           BarChartRodData(
@@ -39,13 +39,14 @@ class OrderVolumeChart extends StatelessWidget {
       ),
     );
 
+    final maxOrders = weeklyOrders.values.isNotEmpty
+        ? weeklyOrders.values.reduce((a, b) => a > b ? a : b)
+        : 10;
+
     return BarChart(
       BarChartData(
         alignment: BarChartAlignment.spaceAround,
-        maxY: (weeklyOrders.values.isNotEmpty
-                ? weeklyOrders.values.reduce((a, b) => a > b ? a : b)
-                : 10)
-            .toDouble() + 2,
+        maxY: maxOrders.toDouble() + 2,
         gridData: FlGridData(
           show: true,
           drawVerticalLine: false,

@@ -175,6 +175,7 @@ class Assets {
   static const String helperGetStatusColor = 'lib/core/helper/get_status_color.dart';
   static const String helperHexToColor = 'lib/core/helper/hex_to_color.dart';
   static const String helperMyBlocObserver = 'lib/core/helper/my_bloc_observer.dart';
+  static const String helperNotificationMessageHelper = 'lib/core/helper/notification_message_helper.dart';
   static const String helperNotificationsHelper = 'lib/core/helper/notifications_helper.dart';
   static const String helperRevenueHelper = 'lib/core/helper/revenue_helper.dart';
   static const String images50426 = 'assets/images/50426.jpg';
@@ -286,6 +287,15 @@ class Assets {
   static const String registerResponseEntityRegisterResponseEntity = 'lib/features/auth/domain/entities/register_response_entity/register_response_entity.dart';
   static const String remoteAuthRemoteDataSource = 'lib/features/auth/data/data_sources/remote/auth_remote_data_source.dart';
   static const String remoteAuthRemoteDataSourceImpl = 'lib/features/auth/data/data_sources_impl/remote/auth_remote_data_source_impl.dart';
+  static const String revenueStatisticsEntityRevenueStatisticsEntity = 'lib/features/home/domain/entities/revenue_statistics_entity/revenue_statistics_entity.dart';
+  static const String revenueStatisticsModelRevenueStatisticsModel = 'lib/features/home/data/models/revenue_statistics_model/revenue_statistics_model.dart';
+  static const String revenueStatisticsRemoteDataSourceImplRevenueStatisticsRemoteDataSourceImpl = 'lib/features/home/data/data_sources_impl/remote/orders/revenue_statistics_remote_data_source_impl/revenue_statistics_remote_data_source_impl.dart';
+  static const String revenueStatisticsRemoteDataSourceRevenueStatisticsRemoteDataSource = 'lib/features/home/data/data_sources/remote/orders/revenue_statistics_remote_data_source/revenue_statistics_remote_data_source.dart';
+  static const String revenueStatisticsRepoImplRevenueStatisticsRepoImpl = 'lib/features/home/data/repos_impl/revenue_statistics_repo_impl/revenue_statistics_repo_impl.dart';
+  static const String revenueStatisticsRepoRevenueStatisticsRepo = 'lib/features/home/domain/repos/dashboard/revenue_statistics_repo/revenue_statistics_repo.dart';
+  static const String revenueStatisticsUseCaseRevenueStatisticsUseCase = 'lib/features/home/domain/use_cases/revenue_statistics_use_case/revenue_statistics_use_case.dart';
+  static const String revenueStatisticsViewModelRevenueStatisticsStates = 'lib/features/home/presentation/views/tabs/dashboard/presentation/manager/revenue_statistics_view_model/revenue_statistics_states.dart';
+  static const String revenueStatisticsViewModelRevenueStatisticsViewModel = 'lib/features/home/presentation/views/tabs/dashboard/presentation/manager/revenue_statistics_view_model/revenue_statistics_view_model.dart';
   static const String reviewsEntityReviewsEntity = 'lib/features/reviews/domain/entities/reviews_entity/reviews_entity.dart';
   static const String reviewsModelReviewsModel = 'lib/features/reviews/data/models/reviews_model/reviews_model.dart';
   static const String reviewsRemoteDataSourceImplReviewsRemoteDataSourceImpl = 'lib/features/reviews/data/data_sources_impl/remote/reviews_remote_data_source_impl/reviews_remote_data_source_impl.dart';
@@ -374,6 +384,7 @@ class Assets {
   static const String utilsMessageValidator = 'lib/core/utils/message_validator.dart';
   static const String utilsNetworkUtils = 'lib/core/utils/network_utils.dart';
   static const String utilsStringsManager = 'lib/core/utils/strings_manager.dart';
+  static const String utilsUsersStatusLocalExtension = 'lib/core/utils/users_status_local_extension.dart';
   static const String viewsBankAccountDetailsView = 'lib/features/home/presentation/views/tabs/payments/presentation/views/bank_account_details_view.dart';
   static const String viewsBankAccountView = 'lib/features/home/presentation/views/tabs/payments/presentation/views/bank_account_view.dart';
   static const String viewsChatView = 'lib/features/home/presentation/views/tabs/messages/presentation/views/chat_view.dart';

@@ -69,14 +69,30 @@ class GetAllUsersViewModel extends Cubit<GetAllUsersStates> {
     List<UserEntity> filtered = List.from(allUsers);
 
     // filter by status
+// filter by status
     if (selectedStatus != UserStatus.all) {
       filtered = filtered.where((u) {
         final userStatus =
-            u.role == "client" ? u.clientStatus : u.freelancerStatus;
-        return userStatus?.toLowerCase() ==
-            selectedStatus.name.toLowerCase();
+        u.role == "client" ? u.clientStatus : u.freelancerStatus;
+        final normalized = userStatus?.toLowerCase();
+        final target = selectedStatus.name.toLowerCase();
+
+        // 🟢 1. التعامل مع "deactivate" و "inactive"
+        if (target == "inactive" && normalized == "deactivate") return true;
+
+        // 🟢 2. التعامل مع verified / unverified فقط لو المستخدم Freelancer
+        if (u.role == "freelancer") {
+          if (target == "verified") return u.isVerified == true;
+          if (target == "unverified") return u.isVerified == false;
+        }
+
+        // 🟢 3. باقي الحالات العادية
+        return normalized == target;
       }).toList();
+
     }
+
+
 
     // filter by search
     if (searchQuery.isNotEmpty) {

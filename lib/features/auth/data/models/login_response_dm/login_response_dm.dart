@@ -13,14 +13,17 @@ class LoginResponseDm extends LoginResponseEntity {
 }
 
 class LoginUserDm extends LoginUserEntity {
-  LoginUserDm({super.email, super.password});
+  LoginUserDm({super.email, super.password, super.id});
   LoginUserDm.fromJson(Map<String, dynamic> json) {
+     id = json['id'];
     email = json['email'];
     password = json['password'];
     role = json['role'];
   }
   LoginUserDm.toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+
+    data['id'] = id;
 
     data['email'] = email;
     data['password'] = password;

@@ -6,9 +6,9 @@ import 'package:taskly_admin/features/home/presentation/views/tabs/messages/pres
 import 'package:taskly_admin/features/home/presentation/views/tabs/messages/presentation/views/widgets/user_info.dart';
 import 'package:taskly_admin/features/home/presentation/views/tabs/messages/presentation/views/widgets/user_status_and_time.dart';
 
- 
- 
-   
+
+
+
 class MessagesCard extends StatelessWidget {
   final VoidCallback onTap;
   final String name;
@@ -19,6 +19,7 @@ class MessagesCard extends StatelessWidget {
   final String? imagePath;
   final bool isFreelancer;
   final double rating;
+
 
   const MessagesCard({
     super.key,
@@ -38,7 +39,7 @@ class MessagesCard extends StatelessWidget {
         final statusColor = getStatusColor(
       isFreelancer ?status : status,
     );
-    
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -52,10 +53,12 @@ class MessagesCard extends StatelessWidget {
           children: [
             UserAvatar(imagePath: imagePath),
             SizedBox(width: 8.w),
-            UserInfo(name: name, rating: rating.toString(),isFreelancer: isFreelancer, freelancerStatus: status,status:  status,),
+            UserInfo(name: name, message:message ,isFreelancer: isFreelancer, freelancerStatus: status,status:  status,),
             UserStatusAndTime(
               status: status,
               statusColor: statusColor,
+              time: time,
+
 
             ),
           ],

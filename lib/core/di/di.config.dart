@@ -1,5 +1,5 @@
-// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format width=80
 
 // **************************************************************************
 // InjectableConfigGenerator
@@ -70,6 +70,8 @@ import '../../features/home/data/data_sources/remote/orders/get_orders_conversio
     as _i7;
 import '../../features/home/data/data_sources/remote/orders/late_orders_remote_data_source/late_orders_remote_data_source.dart'
     as _i648;
+import '../../features/home/data/data_sources/remote/orders/revenue_statistics_remote_data_source/revenue_statistics_remote_data_source.dart'
+    as _i589;
 import '../../features/home/data/data_sources/remote/orders/subscribe_to_orders_remote_data_source/subscribe_to_orders_remote_data_source.dart'
     as _i985;
 import '../../features/home/data/data_sources/remote/orders/update_order_status_remote_data_source/update_order_status_remote_data_source.dart'
@@ -124,6 +126,8 @@ import '../../features/home/data/data_sources_impl/remote/orders/get_orders_conv
     as _i451;
 import '../../features/home/data/data_sources_impl/remote/orders/late_orders_remote_data_source_impl/late_orders_remote_data_source_impl.dart'
     as _i328;
+import '../../features/home/data/data_sources_impl/remote/orders/revenue_statistics_remote_data_source_impl/revenue_statistics_remote_data_source_impl.dart'
+    as _i895;
 import '../../features/home/data/data_sources_impl/remote/orders/subscribe_to_orders_remote_data_source_impl/subscribe_to_orders_remote_data_source_impl.dart'
     as _i130;
 import '../../features/home/data/data_sources_impl/remote/orders/update_order_status_remote_data_source_impl/update_order_status_remote_data_source_impl.dart'
@@ -184,6 +188,8 @@ import '../../features/home/data/repos_impl/pending_payments_repo_impl/pending_p
     as _i77;
 import '../../features/home/data/repos_impl/pending_verifications_repo_impl/pending_verifications_repo_impl.dart'
     as _i216;
+import '../../features/home/data/repos_impl/revenue_statistics_repo_impl/revenue_statistics_repo_impl.dart'
+    as _i884;
 import '../../features/home/data/repos_impl/update_order_status_repo_impl/update_order_status_repo_impl.dart'
     as _i265;
 import '../../features/home/data/repos_impl/users_repos_impl/users_repos_impl.dart'
@@ -194,6 +200,8 @@ import '../../features/home/domain/repos/category_distribution_repo/category_dis
     as _i683;
 import '../../features/home/domain/repos/dashboard/dashboard_repos.dart'
     as _i499;
+import '../../features/home/domain/repos/dashboard/revenue_statistics_repo/revenue_statistics_repo.dart'
+    as _i135;
 import '../../features/home/domain/repos/late_orders_repo/late_orders_repo.dart'
     as _i358;
 import '../../features/home/domain/repos/messages_repos/delete_message_repo/delete_message_repo.dart'
@@ -264,6 +272,8 @@ import '../../features/home/domain/use_cases/mark_message_read_use_case/mark_mes
     as _i869;
 import '../../features/home/domain/use_cases/order_by_user_use_case/order_by_user_use_case.dart'
     as _i287;
+import '../../features/home/domain/use_cases/revenue_statistics_use_case/revenue_statistics_use_case.dart'
+    as _i95;
 import '../../features/home/domain/use_cases/send_message_use_case/send_message_use_case.dart'
     as _i621;
 import '../../features/home/domain/use_cases/subscribe_to_offers_use_case/subscribe_to_offers_use_case.dart'
@@ -296,6 +306,8 @@ import '../../features/home/presentation/views/tabs/dashboard/presentation/manag
     as _i579;
 import '../../features/home/presentation/views/tabs/dashboard/presentation/manager/pending_verifications_view_case/pending_verifications_view_model.dart'
     as _i615;
+import '../../features/home/presentation/views/tabs/dashboard/presentation/manager/revenue_statistics_view_model/revenue_statistics_view_model.dart'
+    as _i11;
 import '../../features/home/presentation/views/tabs/messages/presentation/manager/get_accepted_order_message_view_model/get_accepted_order_message_view_model.dart'
     as _i1047;
 import '../../features/home/presentation/views/tabs/messages/presentation/manager/get_conversations_view_model/get_conversations_view_model.dart'
@@ -391,6 +403,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i1012.ProfileRemoteDataSource>(
       () => _i51.ProfileRemoteDataSourceImpl(gh<_i454.SupabaseClient>()),
     );
+    gh.factory<_i589.RevenueStatisticsRemoteDataSource>(
+      () => _i895.RevenueStatisticsRemoteDataSourceImpl(
+        gh<_i454.SupabaseClient>(),
+      ),
+    );
     gh.singleton<_i374.SupabaseService>(
       () => _i374.SupabaseService(gh<_i454.SupabaseClient>()),
       dispose: (i) => i.dispose(),
@@ -408,10 +425,16 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i361.Dio>(),
         gh<_i374.SupabaseService>(),
         gh<_i454.SupabaseClient>(),
+
       ),
     );
     gh.factory<_i746.AuthRepo>(
       () => _i529.AuthRepoImpl(gh<_i432.AuthRemoteDataSource>()),
+    );
+    gh.factory<_i135.RevenueStatisticsRepo>(
+      () => _i884.RevenueStatisticsRepositoryImpl(
+        gh<_i589.RevenueStatisticsRemoteDataSource>(),
+      ),
     );
     gh.factory<_i159.GetAdminConversationsRemoteDataSource>(
       () => _i876.GetConversationsRemoteDataSourceImpl(
@@ -584,6 +607,9 @@ extension GetItInjectableX on _i174.GetIt {
         supabaseService: gh<_i374.SupabaseService>(),
       ),
     );
+    gh.factory<_i95.GetRevenueStatisticsUseCase>(
+      () => _i95.GetRevenueStatisticsUseCase(gh<_i135.RevenueStatisticsRepo>()),
+    );
     gh.factory<_i183.GetOrdersConversionsRepo>(
       () => _i902.GetOrdersConversionsRepoImpl(
         gh<_i7.GetOrdersConversionsRemoteDataSource>(),
@@ -744,6 +770,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i641.GetMessagesRepo>(
       () => _i364.GetMessagesRepoImpl(
         gh<_i161.GetChatMessagesRemoteDataSource>(),
+      ),
+    );
+    gh.factory<_i11.RevenueStatisticsViewModel>(
+      () => _i11.RevenueStatisticsViewModel(
+        gh<_i95.GetRevenueStatisticsUseCase>(),
       ),
     );
     gh.factory<_i472.GetOrdersConversionsUseCase>(

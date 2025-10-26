@@ -20,9 +20,10 @@ class RegisterResponseDm extends RegisterResponseEntity {
 }
 
 class UserDm extends RegisterUserEntity {
-  UserDm({super.firstName, super.lastName, super.email, super.password, super.role});
+  UserDm({ super.firstName, super.lastName, super.email, super.password, super.role, super.id  });
 
   UserDm.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
     firstName = json['firstName'];
     lastName = json['lastName'];
     email = json['email'];
@@ -32,6 +33,7 @@ class UserDm extends RegisterUserEntity {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'firstName': firstName,
       'lastName': lastName,
       'email': email,

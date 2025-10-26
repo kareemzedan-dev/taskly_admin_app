@@ -19,7 +19,8 @@ class UserStatusCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 150.w,
+      width: 150.w,       // عرض ثابت
+      height: 120.h,      // ارتفاع ثابت
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
         color: color.withOpacity(0.08),
@@ -31,20 +32,28 @@ class UserStatusCard extends StatelessWidget {
         children: [
           Icon(icon, color: color, size: 28.sp),
           SizedBox(height: 8.h),
-          Text(
-            value,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: color,
-              fontSize: 16.sp,
+          Flexible(
+            child: Text(
+              value,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: color,
+                fontSize: 16.sp,
+              ),
             ),
           ),
           SizedBox(height: 4.h),
-          Text(
-            title,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              fontWeight: FontWeight.w500,
-              color: Colors.black87,
+          Flexible(
+            child: Text(
+              title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                fontWeight: FontWeight.w500,
+                color: Colors.black87,
+              ),
             ),
           ),
         ],
